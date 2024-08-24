@@ -1,0 +1,88 @@
+type UserId__1 = principal;
+type UserId = principal;
+type Timestamp = int;
+type Thumbnail = 
+ record {
+   file: blob;
+   fileType: text;
+ };
+type StatusResponse = 
+ record {
+   cycles: opt nat;
+   heap_memory_size: opt nat;
+   memory_size: opt nat;
+   version: opt nat;
+ };
+type StatusRequest = 
+ record {
+   cycles: bool;
+   heap_memory_size: bool;
+   memory_size: bool;
+   version: bool;
+ };
+type ContentInit = 
+ record {
+   chunkCount: nat;
+   createdAt: Timestamp;
+   duration: nat;
+   fileType: text;
+   isReleased: bool;
+   size: nat;
+   thumbnail: Thumbnail;
+   title: text;
+   userId: UserId;
+ };
+type ContentId = text;
+type ContentData = 
+ record {
+   chunkCount: nat;
+   contentCanisterId: principal;
+   contentId: text;
+   createdAt: Timestamp;
+   duration: nat;
+   fileType: text;
+   isReleased: bool;
+   playCount: nat;
+   size: nat;
+   thumbnail: Thumbnail;
+   title: text;
+   createdAt: Timestamp;
+   userId: UserId;
+ };
+type CanisterId = principal;
+service : {
+  changeCanisterSize: (nat) -> () oneway;
+  changeCycleAmount: (nat) -> () oneway;
+  checkCyclesBalance: () -> ();
+  createContent: (ContentInit) -> (opt record {
+                                         ContentId;
+                                         principal;
+                                       });
+  cyclesBalance: () -> (nat) query;
+  deleteContentById: (text) -> (bool);
+  deleteContentCanister: (principal) -> (bool);
+  getAllContentCanisters: () -> (vec CanisterId) query;
+  getAllContentInfo: (bool) -> (vec record {
+                                      ContentId;
+                                      ContentData;
+                                    }) query;
+  getAllContentInfoByUserId: (UserId__1) ->
+   (vec record {
+          ContentId;
+          ContentData;
+        }) query;
+  getAvailableContentId: () -> (nat) query;
+  getCanisterOfContent: (ContentId) -> (opt CanisterId) query;
+  getEntriesOfCanisterToContent: () ->
+   (vec record {
+          CanisterId;
+          ContentId;
+        }) query;
+  getStatus: (opt StatusRequest) -> (opt StatusResponse) query;
+  increasePlayCount: (ContentId) -> () oneway;
+  installCode: (principal, blob, blob) -> ();
+  registerContentInfo: (ContentData) -> (opt ContentId);
+  releaseTrack: (ContentId, bool) -> () oneway;
+  removeContent: (ContentId, nat) -> ();
+  transferCyclesToThisCanister: () -> ();
+}

@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.btn-primary {
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  white-space: nowrap;
+  transition: all 0.1s ease 0s;
+  appearance: none;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  user-select: none;
+  height: 30px;
+  padding: 0px 14px;
+  border-radius: 6px;
+  font-family: "Geogrotesque Wide", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 13px;
+  color: rgb(20, 23, 34);
+  background: rgb(255, 232, 26);
+  box-shadow: rgba(255, 176, 25, 0.4) 0px 0px 10px,
+    rgba(255, 255, 255, 0.2) 0px 1px 0px inset,
+    rgba(0, 0, 0, 0.15) 0px -3px 0px inset, rgb(255, 135, 25) 0px 0px 9px inset;
+}
+
+.bg-btn-primary {
+  color: rgb(20, 23, 34);
+  background: rgb(255, 232, 26);
+  box-shadow: rgba(255, 176, 25, 0.4) 0px 0px 10px,
+    rgba(255, 255, 255, 0.2) 0px 1px 0px inset,
+    rgba(0, 0, 0, 0.15) 0px -3px 0px inset, rgb(255, 135, 25) 0px 0px 9px inset;
+}
+
+.btn-link {
+  margin: 0px 8px 0px 8px;
+  text-transform: uppercase;
+  color: rgb(255, 255, 255);
+  letter-spacing: 0.5px;
+  font-size: 14px;
+  font-family: "Geogrotesque Wide", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+  cursor: pointer;
+  user-select: none;
+}
+
+.btn-outline {
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  white-space: nowrap;
+  transition: all 0.1s ease 0s;
+  appearance: none;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  user-select: none;
+  height: 30px;
+  padding: 0px 14px;
+  border-radius: 6px;
+  font-family: "Geogrotesque Wide", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 13px;
+  box-shadow: rgba(255, 176, 25, 0.4) 0px 0px 10px,
+    rgba(255, 255, 255, 0.2) 0px 1px 0px inset,
+    rgba(0, 0, 0, 0.15) 0px -3px 0px inset, rgb(255, 135, 25) 0px 0px 9px inset;
+}
+
+.y-scrollable-tag::-webkit-scrollbar {
+  width: 8px; /* Adjust scrollbar width */
+}
+
+.y-scrollable-tag::-webkit-scrollbar-thumb {
+  background: #faca15; /* Set scrollbar thumb color */
+  border-radius: 6px; /* Apply rounded corners */
+}
+
+.y-scrollable-tag::-webkit-scrollbar-track {
+  background: transparent; /* Set scrollbar track color */
+}
+
+.x-scrollable-tag::-webkit-scrollbar {
+  width: 6px; /* Adjust scrollbar width */
+  height: 6px;
+}
+
+.x-scrollable-tag::-webkit-scrollbar-thumb {
+  background: #faca15; /* Set scrollbar thumb color */
+  border-radius: 6px; /* Apply rounded corners */
+}
+
+.banner-background {
+  background: rgba(231, 229, 210, 0.1);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 10px;
+  font-family: "Geogrotesque Wide", sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 0; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
+}
+/* Optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+.gap-10 {
+  gap: 2.5rem;
+}

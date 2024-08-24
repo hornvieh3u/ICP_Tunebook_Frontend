@@ -1,0 +1,84 @@
+:root {
+  --radius: 91;
+  --sm-radius: 6;
+  --md-radius: 12;
+  --PI: 3.14159265358979;
+  --circumference: calc(var(--PI) * var(--radius) * 2px);
+  --sm-circumference: calc(var(--PI) * var(--sm-radius) * 2px);
+  --md-circumference: calc(var(--PI) * var(--md-radius) * 2px)
+}
+
+.circle-svg {
+  background: transparent;
+}
+.circle-svg circle {
+  stroke: #34A853;
+  stroke-width: 8;
+  fill: transparent;
+  transform-origin: center;
+  stroke-dasharray: var(--circumference);
+  animation: spinner 2500ms ease-out infinite;
+}
+
+.sm-circle-svg {
+  background: transparent;
+}
+.sm-circle-svg circle {
+  stroke: #34A853;
+  stroke-width: 2;
+  fill: transparent;
+  transform-origin: center;
+  stroke-dasharray: var(--sm-circumference);
+  animation: sm-spinner 2500ms ease-out infinite;
+}
+
+.md-circle-svg {
+  background: transparent;
+}
+.md-circle-svg circle {
+  stroke: #34A853;
+  stroke-width: 3;
+  fill: transparent;
+  transform-origin: center;
+  stroke-dasharray: var(--md-circumference);
+  animation: md-spinner 2500ms ease-out infinite;
+}
+
+@keyframes spinner {
+  from {
+    stroke-dashoffset: var(--circumference);
+    stroke: #34A853;
+    transform: rotateZ(0deg)
+  }
+  to {
+    stroke-dashoffset: calc(var(--circumference) * -1);
+    stroke: #34A853;
+    transform: rotateZ(720deg)
+  }
+}
+
+@keyframes sm-spinner {
+  from {
+    stroke-dashoffset: var(--sm-circumference);
+    stroke: #34A853;
+    transform: rotateZ(0deg)
+  }
+  to {
+    stroke-dashoffset: calc(var(--sm-circumference) * -1);
+    stroke: #34A853;
+    transform: rotateZ(720deg)
+  }
+}
+
+@keyframes md-spinner {
+  from {
+    stroke-dashoffset: var(--md-circumference);
+    stroke: #34A853;
+    transform: rotateZ(0deg)
+  }
+  to {
+    stroke-dashoffset: calc(var(--md-circumference) * -1);
+    stroke: #34A853;
+    transform: rotateZ(720deg)
+  }
+}
