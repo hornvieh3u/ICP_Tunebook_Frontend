@@ -24,6 +24,8 @@ import Application from "./App.js";
 import { useTranslation, I18nextProvider } from 'react-i18next';
 import { SidebarProvider } from "./context/SidebarContext.js";
 
+import { ThemeProvider } from "@material-tailwind/react";
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <SidebarProvider>
@@ -33,7 +35,9 @@ root.render(
             <Router>
               <Suspense fallback={<AppLoader isPercentage={false}/>}>
                 <Windmill theme={_theme} dark>
-                  <Application />
+                  <ThemeProvider>
+                    <Application />
+                  </ThemeProvider>
                 </Windmill>
               </Suspense>
             </Router>

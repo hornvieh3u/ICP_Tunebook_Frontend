@@ -6,7 +6,7 @@ import { AvatarInput } from "../../components/DragDrop/AvatarInput.js";
 import loading from "../../utils/Loading.js";
 import { base64ToBlob, convertToDataURL, getBinaryFileSizeFromBase64 } from "../../utils/format.js";
 import alert from "../../utils/Alert.js";
-import { UpdateInfo } from '../../store/reducers/auth.js';
+import { SetTitle, UpdateInfo } from '../../store/reducers/auth.js';
 import Select from "react-tailwindcss-select";
 import { instruments } from "../../const/variable.js";
 import HttpAgentInit from "../../context/HttpAgentInit.js";
@@ -85,9 +85,9 @@ function Profile() {
           isInitialized: true
         }
           
-        alert('success', "Success on updating profile")
+        alert('success', "Success on updating profile");
         dispatch(UpdateInfo({userInfo : userInfo}));    
-        loading(false)
+        loading(false);
       }
     } catch (err) {
       console.log(err.message);
@@ -97,6 +97,9 @@ function Profile() {
   }
   
   useEffect(() => {
+    
+    dispatch(SetTitle('Profiles'));
+
     setUsername(user.username);
     setAvatarData(user.avatar);
     setPlaceOfBirth(user.placeOfBirth);
@@ -206,7 +209,8 @@ function Profile() {
                   <div className="w-full flex flex-row gap-4">
                       <a className="fill-btn-secondary text-12 w-36 px-4 py-2 text-white font-medium bg-green-450 rounded-8 flex flex-row justify-center gap-45 items-center"
                           style={{textAlign: 'center', cursor: 'pointer'}}>
-                          <p className='text-white font-bold'> Friends List</p>
+                          <p className='text-white font-bold'
+                          onClick={() => {history.push("/app/friends")}}>Friends List</p>
                       </a>
                       <a className="fill-btn-secondary text-12 w-36 px-4 py-2 text-white font-medium bg-green-450 rounded-8 flex flex-row justify-center gap-45 items-center"
                           style={{textAlign: 'center', cursor: 'pointer'}}
@@ -216,7 +220,7 @@ function Profile() {
                       <a className="fill-btn-secondary text-12 w-36 px-4 py-2 text-white font-medium bg-green-450 rounded-8 flex flex-row justify-center gap-45 items-center"
                           style={{textAlign: 'center', cursor: 'pointer'}}
                           onClick={() => {setIsEdit(true)}}>
-                          <p className='text-white font-bold'> Edit Profile</p>
+                          <p className='text-white font-bold'>Edit Profile</p>
                       </a>
                   </div>
                 </>)}

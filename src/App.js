@@ -19,8 +19,8 @@ import { authenticateSockets } from "./utils/socket";
 import { NumberFix } from "./utils/format";
 import alert from "./utils/Alert";
 
-const Layout = lazy(() => import("./pages/Layout/Layout"));
-const ModalLayout = lazy(() => import("./pages/Modal/ModalLayout"))
+const Layout = lazy(() => import("./pages/Layout"));
+const ModalLayout = lazy(() => import("./pages/Layout/Modal/ModalLayout"))
 
 require("flowbite/dist/flowbite.js");
 

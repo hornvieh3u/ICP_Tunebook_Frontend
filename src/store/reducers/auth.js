@@ -126,4 +126,21 @@ const auth = createSlice({
 
 export default auth.reducer;
 
-export const { Login, Logout, SetIdentity, UpdateSongList, SetPrincipal, UpdateInfo, UpdateBalances, SetTitle, SetOrgTunes, SetCurrentTune, SetBalances, UpdateBalance, SetCode, SetBetsId, UpdateToken, SetNowpayMinAmount } = auth.actions;
+export const {
+    Login,
+    Logout,
+    SetIdentity,
+    UpdateSongList,
+    SetPrincipal,
+    UpdateInfo,
+    UpdateBalances,
+    SetTitle,
+    SetOrgTunes,
+    SetCurrentTune,
+    SetBalances,
+    UpdateBalance,
+    SetCode,
+    SetBetsId,
+    UpdateToken,
+    SetNowpayMinAmount
+} = auth.actions;

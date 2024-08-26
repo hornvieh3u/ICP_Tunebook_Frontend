@@ -7,15 +7,17 @@
  */
 import { lazy } from "react";
 
-const Home = lazy(() => import("../pages/Home/Home"));
 const Login = lazy(() => import("../pages/LogIn"));
-const Tunes = lazy(() => import("../pages/Home/Tunes"));
-const MyTunes = lazy(() => import("../pages/Home/MyTune"));
-const Playground = lazy(() => import("../pages/Home/Playground"));
+const Home = lazy(() => import("../pages/Home"));
+const Tunes = lazy(() => import("../pages/Tunes"));
+const Playground = lazy(() => import("../pages/Playground"));
+const Profile = lazy(() => import("../pages/Profile"));
+const MyTunes = lazy(() => import("../pages/Profile/MyTune"));
+const Friends = lazy(() => import("../pages/Profile/Friends"));
+const Sessions = lazy(() => import("../pages/Sessions"));
 
 const Page404 = lazy(() => import("../pages/404"));
 const Blank = lazy(() => import("../pages/Blank"));
-const Profile = lazy(() => import("../pages/Profile"));
 
 const routes = [
   {
@@ -60,6 +62,22 @@ const routes = [
     auth: false,
     role: "user",
     component: Profile,
+  },
+  {
+    path: "/sessions",
+    icon: "./home.svg",
+    name: "Sessions",
+    auth: false,
+    role: "user",
+    component: Sessions,
+  },
+  {
+    path: "/friends",
+    icon: "./home.svg",
+    name: "Friends",
+    auth: false,
+    role: "user",
+    component: Friends,
   },
 ];
 

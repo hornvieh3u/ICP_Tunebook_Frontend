@@ -2,17 +2,20 @@ import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { AuthClient } from "@dfinity/auth-client";
 import loading from "../../utils/Loading.js";
-import { ShowModal } from "../../store/reducers/menu.js";
 import alert from "../../utils/Alert.js";
 import { convertToDataURL, convertUInt8ArrToImageData } from "../../utils/format.js";
 import { useDispatch } from '../../store';
-import { Login } from "../../store/reducers/auth.js";
+import { Login, SetTitle } from "../../store/reducers/auth.js";
 import HttpAgentInit from "../../context/HttpAgentInit.js";
 
 function LoginLayout() {
   let authClient = null;
   const history = useHistory();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(SetTitle('Log In'));
+  }, []);
 
   const handleLogin = async () => {
     try {          
@@ -21,26 +24,31 @@ function LoginLayout() {
 
         const authClient = await AuthClient.create();
         const identity = authClient.getIdentity().getPrincipal().toString();
-        const actor = await HttpAgentInit();
-        
-        let authentication = await actor.authentication(identity);
+        let userInfo = {
+          principal: identity,
+          username: "",
+          avatar: "",
+          placeOfBirth: "",
+          instruments: "",
+          isInitialized: false,
+        }
 
+        const actor = await HttpAgentInit();
+        const authentication = await actor.authentication(identity);
         if(authentication.length == 0){ 
-          alert("info", "Please create the profile");
-          let userInfo = {
+          userInfo = {
               principal: identity,
               username: "",
               avatar: "",
               placeOfBirth: "",
               instruments: "",
-              isInitialized: false
+              isInitialized: false,              
           }
 
-          dispatch(Login({userInfo : userInfo}));
+          alert("info", "Please create the profile");
+        } else {
 
-        } else{
-
-          let userInfo = {
+          userInfo = {
             principal: identity,
             username: authentication[0].username,
             avatar: await convertUInt8ArrToImageData(authentication[0].avatar),
@@ -49,12 +57,13 @@ function LoginLayout() {
             isInitialized: true
           }
 
-          dispatch(Login({userInfo : userInfo}));
           alert("succesus", "The login successful!");
         }
 
-        history.push("/app/profile");      
+        dispatch(Login({userInfo}));
         loading(false);
+
+        history.push("/app/profile");
     } catch (err) {
       console.log("Err", err);
       alert("danger", "Failure on log in");
