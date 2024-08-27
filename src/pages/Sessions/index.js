@@ -5,6 +5,7 @@ import HttpAgentInit from "../../context/HttpAgentInit.js";
 import { Button } from "@material-tailwind/react";
 import alert from "../../utils/Alert.js";
 import loading from "../../utils/Loading.js";
+import axios from "axios";
 
 function Sessions() {
 
@@ -17,6 +18,7 @@ function Sessions() {
     const [comment, setComment] = useState("");
     const [editId, setEditId] = useState(0);
 
+    const [searchword, setSearchword] = useState("");
     const [sessions, setSessions] = useState([]);
     const [page, setPage] = useState(0);
 
@@ -43,7 +45,7 @@ function Sessions() {
         if (res) {
             alert("success", `Success ${editId === 0 ? "adding" : "updating"} session.`);
 
-            getSessions();
+            getSessions(searchword);
             initSessions();
         } else {
             alert("warning", "Fail!");
@@ -54,7 +56,6 @@ function Sessions() {
 
     const initSessions = () => {
         setName("");
-        setLocation("");
         setDayTime("");
         setContact("");
         setComment("");
@@ -63,7 +64,6 @@ function Sessions() {
 
     const editSession = session => {
         setName(session.name);
-        setLocation(session.location);
         setDayTime(session.daytime);
         setContact(session.contact);
         setComment(session.comment);
@@ -72,6 +72,7 @@ function Sessions() {
 
     const getSessions = async search => {
         if (!search) search = "";
+        setSearchword(search);
 
         const actor = await HttpAgentInit();
         const res = await actor.get_sessions(search, page);
@@ -79,8 +80,19 @@ function Sessions() {
         setSessions(res[0]);
     }
 
+    const getLocation = async () => {
+        loading();
+
+        let response = await axios.get("https://api.ipdata.co?api-key=fdb53543784eb922894cdfb0cbf6854e9bb8d66513fe52efcba37c89");
+        let locate = `${response.data.country_name}, ${response.data.city}`;
+        setLocation(locate);
+        getSessions(locate);
+
+        loading(false);
+    }
+
     useEffect(() => {
-        getSessions();
+        getLocation();
 
         dispatch(SetTitle('Sessions'));
     }, [])
@@ -107,7 +119,7 @@ function Sessions() {
                             <p className="text-14 text-coral-500">*</p>
                         </div>
 
-                        <input className="py-2 pl-4 px-4 font-light rounded-2 w-full font-light focus:border-transparent focus:outline-none font-bold" placeholder="London" value={location} onChange={(e) => setLocation(e.target.value)}  style={{
+                        <input readOnly className="py-2 pl-4 px-4 font-light rounded-2 w-full font-light focus:border-transparent focus:outline-none font-bold" placeholder="London" value={location} style={{
                             border: '1.5px solid #e5e7eb', // Set the border color to blue
                             height: '42px', // Adjust the font size as needed
                         }}/>
@@ -154,7 +166,7 @@ function Sessions() {
                     </div>
                 </div>
                 <div className="col-span-2 w-full h-full bg-white rounded-4 flex flex-col p-8 gap-8 overflow-hidden">
-                    <input className="py-8 pl-4 px-4 rounded-2 w-full font-light focus:border-transparent focus:outline-none" placeholder="Search for sessions" onChange={(e) => {getSessions(e.target.value);setPage(0);}} style={{
+                    <input className="py-8 pl-4 px-4 rounded-2 w-full font-light focus:border-transparent focus:outline-none" placeholder="Search for sessions with name or location." value={searchword} onChange={(e) => {getSessions(e.target.value);setPage(0);}} style={{
                         border: '1.5px solid #e5e7eb', // Set the border color to blue
                         height: '42px', // Adjust the font size as needed
                     }}/>
