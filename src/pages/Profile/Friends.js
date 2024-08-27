@@ -22,6 +22,7 @@ function Friends() {
 
         refreshProfile();
         getMyFriends();
+        browsePeople("");
     }, []);
 
     const refreshProfile = async () => {
@@ -93,11 +94,6 @@ function Friends() {
     const browsePeople = async keyword => {
 
         setSearchword(keyword);
-
-        if (keyword === "") {
-            setSearchedPersons([]);
-            return;
-        }
 
         const actor = await HttpAgentInit();
         let [people, count] = await actor.browse_people(keyword, 0);

@@ -126,7 +126,7 @@ function Profile() {
             <div className="w-full h-full flex flex-col gap-4">
              {(!user.username || isEdit) && 
                 (<>
-                 <p className=" font-plus font-bold text-18 leading-22">Profile details</p>
+                  <p className=" font-plus font-bold text-18 leading-22">Profile details</p>
                   <div className="flex flex-col justify-center items-center w-full">
                       <div className="relative cursor-pointer flex justify-center items-center z-20">
                           <AvatarInput avatar={user.avatar} setAvatar={handleAvatar}/>
