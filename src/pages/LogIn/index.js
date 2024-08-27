@@ -52,7 +52,7 @@ function LoginLayout() {
             principal: identity,
             username: authentication[0].username,
             avatar: await convertUInt8ArrToImageData(authentication[0].avatar),
-            placeOfBirth: authentication[0]?.placeOfBirth,
+            placeOfBirth: authentication[0]?.pob,
             instruments: authentication[0]?.instruments,
             isInitialized: true
           }

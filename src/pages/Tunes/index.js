@@ -10,6 +10,8 @@ import { keyInfo, rhythmInfo } from "../../const/variable.js";
 import Select from "react-tailwindcss-select";
 import HttpAgentInit from "../../context/HttpAgentInit.js";
 import { Button } from "@material-tailwind/react";
+import loading from "../../utils/Loading.js";
+import alert from "../../utils/Alert.js";
 
 function Tunes() {
     const history = useHistory();
@@ -17,6 +19,7 @@ function Tunes() {
     const {user} = useSelector((state) => (state.auth));
     const [orgTunes, setOrgTunes] = useState([]);
     const [currentTuneData, setCurrentTuneData] = useState("");
+    const [currentTuneTitle, setCurrentTuneTitle] = useState("");
     const [totalPage, setTotalPage] = useState(0);
     const [currentPage, setCurrentPage] = useState(0);
     const perPage = 15;
@@ -74,11 +77,13 @@ function Tunes() {
 
     const onSelectTune = async (selectedTune) => {
         if(!selectedTune) return;
-        console.log("selectTune", selectedTune)
+        // console.log("selectTune", selectedTune)
 
         const actor = await HttpAgentInit();
         const tuneData = await actor.get_original_tune(selectedTune.title);
+
         setCurrentTuneData(tuneData);
+        setCurrentTuneTitle(selectedTune.title);
 
         dispatch(SetCurrentTune({ origin: true, title: selectedTune.title, data: tuneData}));
         const visualObj = ABCJS.renderAbc("tunedata", tuneData,  { responsive: "resize" });
@@ -91,6 +96,20 @@ function Tunes() {
         dispatch(SetCurrentTune({ origin: false, title: "", data: ""}));
 
         history.push("/app/playground");
+    }
+
+    const addToTunebook = async () => {
+        loading();
+
+        const actor = await HttpAgentInit();
+        const addTuneResult = await actor.add_tune(user.principal, currentTuneTitle, currentTuneData, true, new Uint8Array(0));
+        if (addTuneResult) {
+            alert("success", "Success on adding to tunebook");
+        } else {
+            alert("warning", "Failure on operation");
+        }
+
+        loading(false);
     }
 
     useEffect(() => {
@@ -173,19 +192,23 @@ function Tunes() {
             </div>
 
             <div className="w-full h-full bg-white rounded-4 flex flex-col gap-4 p-8">
-                <div class="flex w-full items-center px-3 gap-3">
-                    <div id="player" class="flex-grow"></div>
+                <div className="flex w-full items-center px-3 gap-3">
+                    <div id="player" className="flex-grow"></div>
                     {!currentTuneData && (
                     <>
-                        <div class="flex w-full items-center justify-center px-3 gap-3 text-[24px] font-normal">
-                            Please select a tune to edit
+                        <div className="flex w-full items-center justify-center px-3 gap-3 text-[24px] font-normal">
+                            Please select a tune to view.
                         </div>
                     </>
                     )}
                     {currentTuneData && (
+                        // <a className="fill-btn-secondary text-11 px-4 py-1 text-white font-medium bg-green-450 rounded-2 cursor-pointer flex flex-row justify-center gap-45 items-center text-center"
+                        //     onClick={() => {history.push("/app/playground")}}>
+                        //     <p className='text-white font-medium'>Edit</p>
+                        // </a>
                         <a className="fill-btn-secondary text-11 px-4 py-1 text-white font-medium bg-green-450 rounded-2 cursor-pointer flex flex-row justify-center gap-45 items-center text-center"
-                            onClick={() => {history.push("/app/playground")}}>
-                            <p className='text-white font-medium'>Edit</p>
+                            onClick={() => addToTunebook()}>
+                            <p className='text-white font-medium'>Add</p>
                         </a>
                     )}
                 </div>

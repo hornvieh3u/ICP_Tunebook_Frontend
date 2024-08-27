@@ -39,7 +39,8 @@ function MyTune() {
         setTotalPage(res[1]);
 
         for(let i = 0; i < res[0].length; i++) {
-            res[0][i].imageData = await convertUInt8ArrToImageData(res[0][i].thumbnail);
+            // res[0][i].imageData = await convertUInt8ArrToImageData(res[0][i].thumbnail);
+            res[0][i].imageData = "/demo/assets/camera.png";
         }
 
         dispatch(SetOrgTunes(res[0]));
@@ -152,16 +153,16 @@ function MyTune() {
                     {!currentTuneData && (
                     <>
                         <div className="flex w-full items-center justify-center px-3 gap-3 text-[24px] font-normal">
-                            Please select a tune to edit
+                            Please select a tune to view.
                         </div>
                     </>
                     )}
-                    {currentTuneData && (
+                    {/* {currentTuneData && (
                         <a className="fill-btn-secondary text-11 px-4 py-1 text-white font-medium bg-green-450 rounded-2 cursor-pointer flex flex-row justify-center gap-45 items-center"
                             style={{textAlign: 'center'}} onClick={() => editMyTune()}>
                             <p className='text-white font-medium'>Edit</p>
                         </a>
-                    )}
+                    )} */}
                 </div>
                 <div className="flex w-full flex-col y-scrollable-tag overflow-y-auto">
                     <div id="tunedata" className="text-gray-800 flex-grow"></div>
