@@ -123,7 +123,10 @@ function Friends() {
             <div className="w-full h-full bg-white rounded-4 flex flex-col p-8 gap-8 overflow-hidden">
                 <div className="flex flex-col gap-2">
                     <p>Add Friends</p>
-                    <input className="py-8 pl-4 px-4 rounded-2 w-full font-light border border-green-500 h-px" placeholder="Search persons" onChange={(e) => {browsePeople(e.target.value);}}/>
+                    <input className="py-8 pl-4 px-4 rounded-2 w-full font-light border border-green-500 focus:border-transparent focus:outline-none h-0" placeholder="Search for persons" onChange={(e) => {browsePeople(e.target.value);}} style={{
+                        border: '1.5px solid #e5e7eb', // Set the border color to blue
+                        height: '42px', // Adjust the font size as needed
+                    }}/>
                 </div>
                 <div className="grid grid-cols-2 gap-4 overflow-y-auto">
                     {

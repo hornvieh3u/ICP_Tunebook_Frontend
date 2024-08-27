@@ -145,11 +145,11 @@ function Profile() {
                   </div>
                   <div className="flex flex-col justify-start w-full gap-[5px]">
                       <div className="flex flex-row justify-start items-center">
-                          <p className="font-plus font-normal text-14 leading-20">Place of Birth</p>
+                          <p className="font-plus font-normal text-14 leading-20">Location</p>
                           <p className="text-14 text-coral-500">*</p>
                       </div>
 
-                      <input className="py-2 pl-4 px-4 font-light rounded-2 w-full font-light focus:border-transparent focus:outline-none font-bold" placeholder="Place of birth" value={placeOfBirth} onChange={(e) => setPlaceOfBirth(e.target.value)}  style={{
+                      <input className="py-2 pl-4 px-4 font-light rounded-2 w-full font-light focus:border-transparent focus:outline-none font-bold" placeholder="Location" value={placeOfBirth} onChange={(e) => setPlaceOfBirth(e.target.value)}  style={{
                           border: '1.5px solid #e5e7eb', // Set the border color to blue
                           height: '42px', // Adjust the font size as needed
                       }}/>
@@ -167,17 +167,6 @@ function Profile() {
                           onChange={(value) => setInstrument(value)}
                           options={instruments}
                       />
-                  </div>
-                  <div className="flex flex-col justify-start w-full gap-[5px]">
-                      <div className="flex flex-row justify-start items-center">
-                          <p className="font-plus  font-normal text-14 leading-20">Principal</p>
-                          <p className="text-14 text-coral-500">*</p>
-                      </div>
-
-                      <input readOnly className="py-2 pl-4 px-4 rounded-2 w-full font-normal focus:border-transparent focus:outline-none" placeholder="Username" value={user.principal}  style={{
-                          border: '1.5px solid #e5e7eb', // Set the border color to blue
-                          height: '42px', // Adjust the font size as needed
-                      }}/>
                   </div>
                   <div className="flex flex-row justify-between items-center w-full gap-[30px] w-[231px] pt-2">
                       <a className="fill-btn-primary text-white text-12 px-4 py-2 font-medium bg-green-450 rounded-8 w-full flex flex-row justify-center gap-45 items-center" onClick={() => saveProfile()}

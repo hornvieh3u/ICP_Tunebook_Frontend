@@ -9,6 +9,7 @@ import ReactPaginate from 'react-paginate';
 import { keyInfo, rhythmInfo } from "../../const/variable.js";
 import Select from "react-tailwindcss-select";
 import HttpAgentInit from "../../context/HttpAgentInit.js";
+import { Button } from "@material-tailwind/react";
 
 function Tunes() {
     const history = useHistory();
@@ -40,15 +41,12 @@ function Tunes() {
     const getOrgTunes = async () => {       
 
         const actor = await HttpAgentInit();
-
-        let res = await actor.filter_tunes(searchTitle, rhythm.value, key.value, currentPage);
-
-        console.log("res", res);
-
-        setTotalPage(res[1]);
+        const res = await actor.filter_tunes(searchTitle, rhythm.value.toLowerCase(), key.value, currentPage);
 
         dispatch(SetOrgTunes(res[0]));
+
         setOrgTunes(res[0]);
+        setTotalPage(res[1]);
     }
     
     const iniABCJS = async (currentTuneData) => {
@@ -89,6 +87,12 @@ function Tunes() {
         await synthControl.setTune(visualObj[0], false, {});
     }
 
+    const addNewTune = () => {
+        dispatch(SetCurrentTune({ origin: false, title: "", data: ""}));
+
+        history.push("/app/playground");
+    }
+
     useEffect(() => {
         iniABCJS(currentTuneData);
     }, [currentTuneData])
@@ -106,21 +110,24 @@ function Tunes() {
                 height: '42px', // Adjust the font size as needed
             }}/>
 
-            <div className="flex flex-row justify-start w-full gap-4 text-gray-400">
-                <div className="w-40">
-                    <Select
-                        value={rhythm}
-                        onChange={(value) => setRhythm(value)}
-                        options={rhythmInfo}
-                    />
+            <div className="flex flex-row justify-between w-full gap-4 text-gray-400">
+                <div className="flex flex-row justify-start gap-4">
+                    <div className="w-40">
+                        <Select
+                            value={rhythm}
+                            onChange={(value) => setRhythm(value)}
+                            options={rhythmInfo}
+                        />
+                    </div>
+                    <div className="w-40">
+                        <Select
+                            value={key}
+                            onChange={(value) => setKey(value)}
+                            options={keyInfo}
+                        />
+                    </div>
                 </div>
-                <div className="w-40">
-                    <Select
-                        value={key}
-                        onChange={(value) => setKey(value)}
-                        options={keyInfo}
-                    />
-                </div>
+                <Button color="blue" className="float-right" onClick={() => addNewTune()}>New Tune</Button>
             </div>
         </div>
         <div className="w-full h-full flex flex-row pb-8 px-2 md:px-4 lg:px-16 gap-16">
@@ -176,8 +183,8 @@ function Tunes() {
                     </>
                     )}
                     {currentTuneData && (
-                        <a className="fill-btn-secondary text-11 px-4 py-1 text-white font-medium bg-green-450 rounded-2 cursor-pointer flex flex-row justify-center gap-45 items-center"
-                            style={{textAlign: 'center'}} onClick={() => {history.push("/app/playground")}}>
+                        <a className="fill-btn-secondary text-11 px-4 py-1 text-white font-medium bg-green-450 rounded-2 cursor-pointer flex flex-row justify-center gap-45 items-center text-center"
+                            onClick={() => {history.push("/app/playground")}}>
                             <p className='text-white font-medium'>Edit</p>
                         </a>
                     )}

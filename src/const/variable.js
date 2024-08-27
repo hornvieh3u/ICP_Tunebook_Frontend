@@ -1,26 +1,18 @@
 export const instruments = [
-    { value: "Guitar", label: "Guitar" },
     { value: "Flute", label: "Flute" },
-    { value: "Saxophone", label: "GuiSaxophonetar" },
-    { value: "Violin", label: "Violin" },
-    { value: "Piano", label: "Piano" },
-    { value: "Cello", label: "Cello" },
-    { value: "Trumpet", label: "Trumpet" },
-    { value: "Drums", label: "Drums" },
-    { value: "Bass Guitar", label: "Bass Guitar" },
-    { value: "Clarinet", label: "Clarinet" },
+    { value: "Fiddle", label: "Fiddle" },
+    { value: "Low Whistle", label: "Low Whistle" },
+    { value: "Pipes", label: "Pipes" },
+    { value: "Accordion", label: "Accordion" },
+    { value: "Concertina", label: "Concertina" },
+    { value: "Bodhrán", label: "Bodhrán" },
     { value: "Harp", label: "Harp" },
+    { value: "Guitar", label: "Guitar" },
+    { value: "Bouzouki", label: "Bouzouki" },
     { value: "Mandolin", label: "Mandolin" },
-    { value: "Ukulele", label: "Ukulele" },
-    { value: "Acoordion", label: "Acoordion" },
-    { value: "Xylophone", label: "Xylophone" },
-    { value: "Keyboard Instrument", label: "Keyboard Instrument" },
-    { value: "Lute", label: "Lute" },
-    { value: "Oboe", label: "Oboe" },
-    { value: "Violino piccolo", label: "Violino piccolo" },
-    { value: "Recorder", label: "Recorder" },
-    { value: "Alphorn", label: "Alphorn" },
-    { value: "Bagpipe", label: "Bagpipe" }
+    { value: "Banjo", label: "Banjo" },
+    { value: "Piano", label: "Piano" },
+    { value: "Other", label: "Other" }
 ];
 
 export const rhythmInfo = [
