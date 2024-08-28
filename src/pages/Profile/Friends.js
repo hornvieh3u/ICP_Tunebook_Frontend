@@ -22,7 +22,6 @@ function Friends() {
 
         refreshProfile();
         getMyFriends();
-        browsePeople("");
     }, []);
 
     const refreshProfile = async () => {
@@ -48,6 +47,7 @@ function Friends() {
         }
 
         setMyFriends(friends);
+        browsePeople();
     }
 
     const sendFriendRequest = async targetPrincipal => {
@@ -56,14 +56,14 @@ function Friends() {
 
         const actor = await HttpAgentInit();
         let res = await actor.send_friend_request(user.principal, targetPrincipal);
-
-        if (res) {
-            setSearchedPersons([]);
-            refreshProfile();
+        if (res.length !==0) {
             alert("success", "Success");
         } else {
             alert("danger", "Fail");
         }
+
+        setSearchedPersons([]);
+        refreshProfile();
 
         loading(false);
     }
@@ -93,24 +93,15 @@ function Friends() {
 
     const browsePeople = async keyword => {
 
+        keyword ||= "";
         setSearchword(keyword);
 
         const actor = await HttpAgentInit();
-        let [people, count] = await actor.browse_people(keyword, 0);
+        let [people, count] = await actor.browse_people(user.principal, keyword, 0);
         
-        const friendsPrincipals = myFriends.map(i => i.principal);
-        const incomingPrincipals = incoming.map(i => i.principal);
-        const outgoingPrincipals = outgoing.map(i => i.principal);
-
         let persons = [];
         for(let i = 0; i < people.length; i++) {
-            if (people[i].principal === user.principal ||
-                friendsPrincipals.indexOf(people[i].principal) !== -1 ||
-                incomingPrincipals.indexOf(people[i].principal) !== -1 ||
-                outgoingPrincipals.indexOf(people[i].principal) !== -1
-            ) continue;
             people[i].imageData = await convertUInt8ArrToImageData(people[i].avatar);
-
             persons.push(people[i]);
         }
 
