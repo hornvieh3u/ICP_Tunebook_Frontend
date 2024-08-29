@@ -6,6 +6,7 @@ import HttpAgentInit from "../../context/HttpAgentInit.js";
 import { convertUInt8ArrToImageData } from "../../utils/format.js";
 import alert from "../../utils/Alert.js";
 import loading from "../../utils/Loading.js";
+import { Modal } from "flowbite-react";
 
 function Friends() {
 
@@ -16,6 +17,8 @@ function Friends() {
     const [outgoing, setOutgoing] = useState([]);
     const [searchedPersons, setSearchedPersons] = useState([]);
     const [activeTab, setActiveTab] = useState("friends");
+    const [userProfile, setUserProfile] = useState({});
+    const [openModal, setOpenModal] = useState(false);
 
     useEffect(() => {
         dispatch(SetTitle('Friends'));
@@ -92,7 +95,7 @@ function Friends() {
     }
 
     const browsePeople = async keyword => {
-
+        cancelFriendRequest
         keyword ||= "";
         setSearchword(keyword);
 
@@ -106,6 +109,19 @@ function Friends() {
         }
 
         setSearchedPersons(persons);
+    }
+
+    const viewFriendProfile = async principal => {
+        loading();
+
+        const actor = await HttpAgentInit();
+        const res = await actor.authentication(principal);
+        res[0].imageData = await convertUInt8ArrToImageData(res[0].avatar);
+
+        setUserProfile(res[0]);
+        setOpenModal(true);
+
+        loading(false);
     }
 
     return (
@@ -164,7 +180,7 @@ function Friends() {
                                 <div className="flex flex-col gap-4 rounded-2 border border-green-500 p-4">
                                     <Avatar className="block mx-auto" src={friend.imageData} alt="avatar" variant="rounded" />
                                     <Typography className="text-center">{friend.username}</Typography>
-                                    <Button size="sm" color="blue">View</Button>
+                                    <Button size="sm" color="blue" onClick={() => viewFriendProfile(friend.principal)}>View</Button>
                                 </div>
                             ))
                         }
@@ -173,7 +189,7 @@ function Friends() {
                                 <div className="flex flex-col gap-4 rounded-2 border border-green-500 p-4">
                                     <Avatar className="block mx-auto" src={o.imageData} alt="avatar" variant="rounded" />
                                     <Typography className="text-center">{o.username}</Typography>
-                                    <Button size="sm" color="purple" onClick={() => cancelFriendRequest(o.principal)}>Cancel</Button>
+                                    {/* <Button size="sm" color="purple" onClick={() => cancelFriendRequest(o.principal)}>Cancel</Button> */}
                                 </div>
                             ))
                         }
@@ -182,7 +198,10 @@ function Friends() {
                                 <div className="flex flex-col gap-4 rounded-2 border border-green-500 p-4">
                                     <Avatar className="block mx-auto" src={i.imageData} alt="avatar" variant="rounded" />
                                     <Typography className="text-center">{i.username}</Typography>
-                                    <Button size="sm" color="red" onClick={() => acceptFriendRequest(i.principal)}>Accept</Button>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <Button size="sm" color="blue" onClick={() => viewFriendProfile(i.principal)}>View</Button>
+                                        <Button size="sm" color="red" onClick={() => acceptFriendRequest(i.principal)}>Accept</Button>
+                                    </div>
                                 </div>
                             ))
                         }
@@ -190,6 +209,39 @@ function Friends() {
                 </div>
             </div>
         </div>
+        {
+            openModal && (
+                <div className="modal-overlay fixed inset-0 flex items-center justify-center text-black">
+                    <div className="fixed inset-0 flex items-center justify-center">
+                        <div className="flex w-full flex-row justify-center items-center px-4">
+                            <div style={{maxWidth: "469px", maxHeight: '666px', margin: '0 auto', backgroundColor: "rgba(255, 255, 255)"}} className="w-full p-4 sm:p-6 md:p-8 gap-[20px] bg-opacity-40 rounded-5 shadow-bottom_1 flex justify-start flex-col items-center">                    
+                                <div className="flex flex-col justify-center items-center w-full">
+                                    <div className="relative cursor-pointer flex justify-center items-center z-20">
+                                        <Avatar src={userProfile.imageData} alt="avatar" variant="rounded" />
+                                    </div>                                
+                                </div>
+                                <p className="text-black font-plus font-bold text-18 leading-22">{userProfile.username}</p>
+                                <div className="relative flex flex-col justify-start w-full gap-[5px]">
+                                    <div className="flex flex-row justify-start items-center">
+                                        <p className="font-plus text-black font-light text-14 leading-20">Location</p>
+                                    </div>
+                                    <input readOnly className="border bg-gray-100 py-2 px-4 rounded-3 text-black font-plus font-normal outline-none border-green-400 focus:border-transparent focus:ring-0" value={userProfile.pob} style={{height: '36px'}}></input>
+                                </div>
+                                <div className="relative flex flex-col justify-start w-full gap-[5px]">
+                                    <div className="flex flex-row justify-start items-center">
+                                        <p className="font-plus text-black font-light text-14 leading-20">Instruments</p>
+                                    </div>
+                                    <input readOnly className="border bg-gray-100 py-2 px-4 rounded-3 text-black font-plus font-normal outline-none border-green-400 focus:border-transparent focus:ring-0" value={userProfile.instruments} style={{height: '36px'}}></input>
+                                </div>
+                                <Button className="w-full mt-2" size="md" color="green" onClick={() => setOpenModal(!openModal)}>
+                                    Ok
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
         </>
     )
 }
