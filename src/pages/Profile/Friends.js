@@ -6,7 +6,6 @@ import HttpAgentInit from "../../context/HttpAgentInit.js";
 import { convertUInt8ArrToImageData } from "../../utils/format.js";
 import alert from "../../utils/Alert.js";
 import loading from "../../utils/Loading.js";
-import { Modal } from "flowbite-react";
 
 function Friends() {
 
@@ -95,7 +94,7 @@ function Friends() {
     }
 
     const browsePeople = async keyword => {
-        cancelFriendRequest
+
         keyword ||= "";
         setSearchword(keyword);
 

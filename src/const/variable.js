@@ -51,3 +51,19 @@ export const keyInfo = [
 export const LOCAL_STORAGE_KEYS = {
     EDIT_TUNE_ID: "edit_tune_id"
 }
+
+export const DAY_OF_WEEK = [
+    { value: "Sunday", label: "Sunday" },
+    { value: "Monday", label: "Monday" },
+    { value: "Tuesday", label: "Tuesday" },
+    { value: "Wednesday", label: "Wednesday" },
+    { value: "Thursday", label: "Thursday" },
+    { value: "Friday", label: "Friday" },
+    { value: "Saturday", label: "Saturday" }
+];
+
+export const REPEAT_DURATION = [
+    { value: "Weekly", label: "Weekly" },
+    { value: "Bi-weekly", label: "Bi-weekly" },
+    { value: "Monthly", label: "Monthly" }
+];

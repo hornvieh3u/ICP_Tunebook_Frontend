@@ -3,9 +3,11 @@ import { dispatch, useDispatch, useSelector } from "../../store/index.js";
 import { SetTitle } from '../../store/reducers/auth.js';
 import HttpAgentInit from "../../context/HttpAgentInit.js";
 import { Button } from "@material-tailwind/react";
+import Select from "react-tailwindcss-select";
 import alert from "../../utils/Alert.js";
 import loading from "../../utils/Loading.js";
 import axios from "axios";
+import { DAY_OF_WEEK, REPEAT_DURATION } from "../../const/variable.js";
 
 function Sessions() {
 
@@ -13,7 +15,8 @@ function Sessions() {
 
     const [name, setName] = useState("");
     const [location, setLocation] = useState("");
-    const [daytime, setDayTime] = useState("");
+    const [dayTime, setDayTime] = useState("");
+    const [dayDuation, setDayDuration] = useState();
     const [contact, setContact] = useState("");
     const [comment, setComment] = useState("");
     const [editId, setEditId] = useState(0);
@@ -25,7 +28,8 @@ function Sessions() {
     const saveSession = async () => {
         if (!name ||
             !location ||
-            !daytime ||
+            !dayTime ||
+            !dayDuation?.value ||
             !contact ||
             !comment
         ) {
@@ -36,11 +40,12 @@ function Sessions() {
         loading();
 
         let res = false;
+        const dateTime = `${dayTime},${dayDuation.value}`;
         const actor = await HttpAgentInit();
         if (editId === 0)
-            res = await actor.add_session(user.principal, name, location, daytime, contact, comment);
+            res = await actor.add_session(user.principal, name, location, dateTime, contact, comment);
         else
-            res = await actor.update_session(editId, user.principal, name, location, daytime, contact, comment);
+            res = await actor.update_session(editId, user.principal, name, location, dateTime, contact, comment);
 
         if (res) {
             alert("success", `Success ${editId === 0 ? "adding" : "updating"} session.`);
@@ -56,15 +61,20 @@ function Sessions() {
 
     const initSessions = () => {
         setName("");
+        setLocation("");
         setDayTime("");
+        setDayDuration();
         setContact("");
         setComment("");
         setEditId(0);
     }
 
     const editSession = session => {
+        const dayInfo = session.daytime.split(",");
         setName(session.name);
-        setDayTime(session.daytime);
+        setLocation(session.location);
+        setDayTime(dayInfo[0]);
+        setDayDuration({value:dayInfo[1],label:dayInfo[1]});
         setContact(session.contact);
         setComment(session.comment);
         setEditId(session.id);
@@ -92,7 +102,8 @@ function Sessions() {
     }
 
     useEffect(() => {
-        getLocation();
+        // getLocation();
+        getSessions();
 
         dispatch(SetTitle('Sessions'));
     }, [])
@@ -119,7 +130,7 @@ function Sessions() {
                             <p className="text-14 text-coral-500">*</p>
                         </div>
 
-                        <input readOnly className="py-2 pl-4 px-4 font-light rounded-2 w-full font-light focus:border-transparent focus:outline-none font-bold" placeholder="London" value={location} style={{
+                        <input className="py-2 pl-4 px-4 font-light rounded-2 w-full font-light focus:border-transparent focus:outline-none font-bold" placeholder="London" value={location} onChange={(e) => setLocation(e.target.value)} style={{
                             border: '1.5px solid #e5e7eb', // Set the border color to blue
                             height: '42px', // Adjust the font size as needed
                         }}/>
@@ -129,11 +140,27 @@ function Sessions() {
                             <p className="font-plus  font-normal text-14 leading-20">Daytime</p>
                             <p className="text-14 text-coral-500">*</p>
                         </div>
+                        <div className="grid grid-cols-3 gap-2">
+                            <input type="datetime-local" className="col-span-2 py-2 pl-4 px-4 rounded-2 w-full font-normal focus:border-transparent focus:outline-none" placeholder="12:00" value={dayTime} onChange={(e) => setDayTime(e.target.value)} style={{
+                                border: '1.5px solid #e5e7eb', // Set the border color to blue
+                                height: '39px', // Adjust the font size as needed
+                            }}/>
+                            {/* <Select
+                                isMultiple={false}
+                                placeholder="Select day..."
+                                value={dayOfWeek}
+                                onChange={(value) => setDayOfWeek(value)}
+                                options={DAY_OF_WEEK}
+                            /> */}
 
-                        <input type="datetime-local" className="py-2 pl-4 px-4 rounded-2 w-full font-normal focus:border-transparent focus:outline-none" value={daytime} onChange={(e) => setDayTime(e.target.value)} style={{
-                            border: '1.5px solid #e5e7eb', // Set the border color to blue
-                            height: '42px', // Adjust the font size as needed
-                        }}/>
+                            <Select
+                                isMultiple={false}
+                                placeholder="Select duration..."
+                                value={dayDuation}
+                                onChange={(value) => setDayDuration(value)}
+                                options={REPEAT_DURATION}
+                            />
+                        </div>
                     </div>
                     <div className="flex flex-col justify-start w-full gap-[5px]">
                         <div className="flex flex-row justify-start items-center">
@@ -178,37 +205,44 @@ function Sessions() {
                             )
                         }
                         {
-                            sessions.map((session, idx) => (
-                                <div key={idx} className="flex flex-col gap-2 p-2 border border-[#e5e7eb] text-black overflow-hidden">
-                                    <div className="grid grid-cols-3 gap-2">
-                                        <div className="text-right">Name:</div>
-                                        <div className="col-span-2 truncate" title={session.name}>{session.name}</div>
+                            sessions.map((session, idx) => {
+                                let dayInfo = session.daytime.split(",");
+                                return (
+                                    <div key={idx} className="flex flex-col gap-2 p-2 border border-[#e5e7eb] text-black overflow-hidden">
+                                        <div className="grid grid-cols-3 gap-2">
+                                            <div className="text-right">Name:</div>
+                                            <div className="col-span-2 truncate" title={session.name}>{session.name}</div>
+                                        </div>
+                                        <div className="grid grid-cols-3 gap-2">
+                                            <div className="text-right">Location:</div>
+                                            <div className="col-span-2 truncate" title={session.location}>{session.location}</div>
+                                        </div>
+                                        <div className="grid grid-cols-3 gap-2">
+                                            <div className="text-right">Since:</div>
+                                            <div className="col-span-2 truncate" title={dayInfo[0]}>{dayInfo[0]}</div>
+                                        </div>
+                                        <div className="grid grid-cols-3 gap-2">
+                                            <div className="text-right">Repeatly:</div>
+                                            <div className="col-span-2 truncate" title={dayInfo[1]}>{dayInfo[1]}</div>
+                                        </div>
+                                        <div className="grid grid-cols-3 gap-2">
+                                            <div className="text-right">Contact:</div>
+                                            <div className="col-span-2 truncate" title={session.contact}>{session.contact}</div>
+                                        </div>
+                                        <div className="grid grid-cols-3 gap-2">
+                                            <div className="text-right">Comment:</div>
+                                            <div className="col-span-2 truncate" title={session.comment}>{session.comment}</div>
+                                        </div>
+                                        {
+                                            session.principal === user.principal ? (
+                                                <Button color="green" size="sm" onClick={() => editSession(session)}>Edit</Button>
+                                            ) : (
+                                                <Button color="blue" size="sm" onClick={() => {}}>View</Button>
+                                            )
+                                        }
                                     </div>
-                                    <div className="grid grid-cols-3 gap-2">
-                                        <div className="text-right">Location:</div>
-                                        <div className="col-span-2 truncate" title={session.location}>{session.location}</div>
-                                    </div>
-                                    <div className="grid grid-cols-3 gap-2">
-                                        <div className="text-right">DayTime:</div>
-                                        <div className="col-span-2 truncate" title={session.daytime}>{session.daytime}</div>
-                                    </div>
-                                    <div className="grid grid-cols-3 gap-2">
-                                        <div className="text-right">Contact:</div>
-                                        <div className="col-span-2 truncate" title={session.contact}>{session.contact}</div>
-                                    </div>
-                                    <div className="grid grid-cols-3 gap-2">
-                                        <div className="text-right">Comment:</div>
-                                        <div className="col-span-2 truncate" title={session.comment}>{session.comment}</div>
-                                    </div>
-                                    {
-                                        session.principal === user.principal ? (
-                                            <Button color="green" size="sm" onClick={() => editSession(session)}>Edit</Button>
-                                        ) : (
-                                            <Button color="blue" size="sm" onClick={() => {}}>View</Button>
-                                        )
-                                    }
-                                </div>
-                            ))
+                                )
+                            })
                         }
                     </div>
                 </div>
