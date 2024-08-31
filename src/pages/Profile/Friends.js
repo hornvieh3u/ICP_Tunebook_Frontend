@@ -115,7 +115,17 @@ function Friends() {
 
         const actor = await HttpAgentInit();
         const res = await actor.authentication(principal);
+        const userTunes = await actor.get_user_tune_list(principal, -1);
+        const myTunes = await actor.get_user_tune_list(user.principal, -1);
+        const myTuneTitles = myTunes[0].map(i => i.title);
+
         res[0].imageData = await convertUInt8ArrToImageData(res[0].avatar);
+        res[0].tunes = userTunes[0].map(tune => {
+            tune.isSame = myTuneTitles.includes(tune.title);
+            return tune;
+        });
+
+        console.log(res[0])
 
         setUserProfile(res[0]);
         setOpenModal(true);
@@ -231,6 +241,22 @@ function Friends() {
                                         <p className="font-plus text-black font-light text-14 leading-20">Instruments</p>
                                     </div>
                                     <input readOnly className="border bg-gray-100 py-2 px-4 rounded-3 text-black font-plus font-normal outline-none border-green-400 focus:border-transparent focus:ring-0" value={userProfile.instruments} style={{height: '36px'}}></input>
+                                </div>
+                                <div className="flex flex-col justify-start w-full gap-[2px]">
+                                    <div className="flex flex-row justify-start items-center">
+                                        <p className="font-plus text-black font-light text-14 leading-20">Tunes</p>
+                                    </div>
+                                    <div className="flex flex-col w-full gap-[3px] h-[200px] overflow-y-auto">
+                                        {
+                                            userProfile.tunes.map(tune => (
+                                                console.log(tune.isSame),
+                                                <div className="flex flex-row justify-start w-full border border-green-400 gap-4 p-1 rounded-3">
+                                                    <img className="w-10 h-10 rounded-3" src="/demo/assets/music.png" alt="avatar" />
+                                                    <p className={`font-plus text-[13px] content-center ${tune.isSame? "text-green-300" : ""}`}>{tune.title.replaceAll(".abc", "")}</p>
+                                                </div>
+                                            ))
+                                        }
+                                    </div>
                                 </div>
                                 <Button className="w-full mt-2" size="md" color="green" onClick={() => setOpenModal(!openModal)}>
                                     Ok

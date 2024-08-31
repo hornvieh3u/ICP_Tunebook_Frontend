@@ -26,3 +26,8 @@ yarn-error.log*
 
 .env
 .vercel
+/.dfx
+/.dfx
+/.dfx/ic/lsp
+/.dfx/ic
+.dfx/ic/lsp/4ramb-vaaaa-aaaan-qmi2a-cai.did

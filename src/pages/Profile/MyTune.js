@@ -40,7 +40,7 @@ function MyTune() {
 
         for(let i = 0; i < res[0].length; i++) {
             // res[0][i].imageData = await convertUInt8ArrToImageData(res[0][i].thumbnail);
-            res[0][i].imageData = "/demo/assets/camera.png";
+            res[0][i].imageData = "/demo/assets/music.png";
         }
 
         dispatch(SetOrgTunes(res[0]));
@@ -110,10 +110,7 @@ function MyTune() {
             <div className="w-full h-full flex flex-col gap-4 overflow-y-auto">
                 {orgTunes.map((tune, index) => (
                     <div className="flex rounded-4 bg-white px-4 py-2 flex-row w-full justify-start items-center gap-4 cursor-pointer" key={index} onClick={() => {onSelectTune(tune)}}>  
-                        <img className="rounded-8 w-12 h-12" src={tune.imageData}
-                            style={{
-                                border: '3px solid #faca15' // Adjust the font size as needed
-                        }}/>
+                        <img className="w-12 h-12" src={tune.imageData}/>
                         <p className="font-plus-bold font-bold text-16">{tune.title.replaceAll(".abc", "")}</p>
                     </div>
                 ))}

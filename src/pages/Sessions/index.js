@@ -7,7 +7,8 @@ import Select from "react-tailwindcss-select";
 import alert from "../../utils/Alert.js";
 import loading from "../../utils/Loading.js";
 import axios from "axios";
-import { DAY_OF_WEEK, REPEAT_DURATION } from "../../const/variable.js";
+import ReactPaginate from 'react-paginate';
+import { REPEAT_DURATION } from "../../const/variable.js";
 
 function Sessions() {
 
@@ -23,7 +24,10 @@ function Sessions() {
 
     const [searchword, setSearchword] = useState("");
     const [sessions, setSessions] = useState([]);
-    const [page, setPage] = useState(0);
+
+    const [totalPage, setTotalPage] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
+    const perPage = 15;
 
     const saveSession = async () => {
         if (!name ||
@@ -51,7 +55,7 @@ function Sessions() {
             alert("success", `Success ${editId === 0 ? "adding" : "updating"} session.`);
 
             getSessions(searchword);
-            initSessions();
+            // initSessions();
         } else {
             alert("warning", "Fail!");
         }
@@ -85,9 +89,10 @@ function Sessions() {
         setSearchword(search);
 
         const actor = await HttpAgentInit();
-        const res = await actor.get_sessions(search, page);
+        const res = await actor.get_sessions(search, currentPage);
         
         setSessions(res[0]);
+        setTotalPage(res[1]);
     }
 
     const getLocation = async () => {
@@ -107,6 +112,10 @@ function Sessions() {
 
         dispatch(SetTitle('Sessions'));
     }, [])
+
+    useEffect(() => {
+        getSessions();
+    }, [currentPage])
 
     return (
         <>
@@ -193,57 +202,84 @@ function Sessions() {
                     </div>
                 </div>
                 <div className="col-span-2 w-full h-full bg-white rounded-4 flex flex-col p-8 gap-8 overflow-hidden">
-                    <input className="py-8 pl-4 px-4 rounded-2 w-full font-light focus:border-transparent focus:outline-none" placeholder="Search for sessions with name or location." value={searchword} onChange={(e) => {getSessions(e.target.value);setPage(0);}} style={{
+                    <input className="py-8 pl-4 px-4 rounded-2 w-full font-light focus:border-transparent focus:outline-none" placeholder="Search for sessions with name or location." value={searchword} onChange={(e) => {getSessions(e.target.value);setCurrentPage(0);}} style={{
                         border: '1.5px solid #e5e7eb', // Set the border color to blue
                         height: '42px', // Adjust the font size as needed
                     }}/>
-
-                    <div className="grid grid-cols-3 gap-4">
-                        {
-                            sessions.length === 0 && (
-                                <p>No sessions</p>
-                            )
-                        }
-                        {
-                            sessions.map((session, idx) => {
-                                let dayInfo = session.daytime.split(",");
-                                return (
-                                    <div key={idx} className="flex flex-col gap-2 p-2 border border-[#e5e7eb] text-black overflow-hidden">
-                                        <div className="grid grid-cols-3 gap-2">
-                                            <div className="text-right">Name:</div>
-                                            <div className="col-span-2 truncate" title={session.name}>{session.name}</div>
-                                        </div>
-                                        <div className="grid grid-cols-3 gap-2">
-                                            <div className="text-right">Location:</div>
-                                            <div className="col-span-2 truncate" title={session.location}>{session.location}</div>
-                                        </div>
-                                        <div className="grid grid-cols-3 gap-2">
-                                            <div className="text-right">Since:</div>
-                                            <div className="col-span-2 truncate" title={dayInfo[0]}>{dayInfo[0]}</div>
-                                        </div>
-                                        <div className="grid grid-cols-3 gap-2">
-                                            <div className="text-right">Repeatly:</div>
-                                            <div className="col-span-2 truncate" title={dayInfo[1]}>{dayInfo[1]}</div>
-                                        </div>
-                                        <div className="grid grid-cols-3 gap-2">
-                                            <div className="text-right">Contact:</div>
-                                            <div className="col-span-2 truncate" title={session.contact}>{session.contact}</div>
-                                        </div>
-                                        <div className="grid grid-cols-3 gap-2">
-                                            <div className="text-right">Comment:</div>
-                                            <div className="col-span-2 truncate" title={session.comment}>{session.comment}</div>
-                                        </div>
-                                        {
-                                            session.principal === user.principal ? (
-                                                <Button color="green" size="sm" onClick={() => editSession(session)}>Edit</Button>
-                                            ) : (
-                                                <Button color="blue" size="sm" onClick={() => {}}>View</Button>
-                                            )
-                                        }
-                                    </div>
+                    <div className="overflow-y-auto">
+                        <div className="grid grid-cols-3 gap-4">
+                            {
+                                sessions.length === 0 && (
+                                    <p>No sessions</p>
                                 )
-                            })
-                        }
+                            }
+                            {
+                                sessions.map((session, idx) => {
+                                    let dayInfo = session.daytime.split(",");
+                                    return (
+                                        <div key={idx} className="flex flex-col gap-2 p-2 border border-[#e5e7eb] text-black overflow-hidden">
+                                            <div className="grid grid-cols-3 gap-2">
+                                                <div className="text-right">Name:</div>
+                                                <div className="col-span-2 truncate" title={session.name}>{session.name}</div>
+                                            </div>
+                                            <div className="grid grid-cols-3 gap-2">
+                                                <div className="text-right">Location:</div>
+                                                <div className="col-span-2 truncate" title={session.location}>{session.location}</div>
+                                            </div>
+                                            <div className="grid grid-cols-3 gap-2">
+                                                <div className="text-right">Since:</div>
+                                                <div className="col-span-2 truncate" title={dayInfo[0]}>{dayInfo[0]}</div>
+                                            </div>
+                                            <div className="grid grid-cols-3 gap-2">
+                                                <div className="text-right">Repeatly:</div>
+                                                <div className="col-span-2 truncate" title={dayInfo[1]}>{dayInfo[1]}</div>
+                                            </div>
+                                            <div className="grid grid-cols-3 gap-2">
+                                                <div className="text-right">Contact:</div>
+                                                <div className="col-span-2 truncate" title={session.contact}>{session.contact}</div>
+                                            </div>
+                                            <div className="grid grid-cols-3 gap-2">
+                                                <div className="text-right">Comment:</div>
+                                                <div className="col-span-2 truncate" title={session.comment}>{session.comment}</div>
+                                            </div>
+                                            {
+                                                session.principal === user.principal && (
+                                                    <Button color="green" size="sm" onClick={() => editSession(session)}>Edit</Button>
+                                                )
+                                            }
+                                        </div>
+                                    )
+                                })
+                            }
+                            
+                        </div>
+                        <div className="w-full flex flex-col md:flex-row text-gray-400">
+                            {totalPage > perPage ? ( <div style={{alignItems: "center", justifyContent:"end"}} >
+                                <ReactPaginate
+                                    className="inline-flex text-sm h-8 mt-6 text-gray-400"
+                                    previousLabel={"Previous"}
+                                    nextLabel={"Next"}
+                                    nextLinkClassName="flex items-center justify-center px-3 h-8 ms-0 leading-tight
+                                    border rounded-e-lg bg-primary border-green-300 text-gray-400 hover:bg-white hover:text-green-600"
+                                    previousLinkClassName="flex items-center justify-center px-3 h-8 ms-0 leading-tight
+                                        border rounded-s-lg bg-primary border-green-300 text-gray-400 hover:bg-white hover:text-green-600"
+                                    breakLabel={"..."}
+                                    selectedPageRel={1}
+                                    breakClassName=""
+                                    breakLinkClassName="flex items-center justify-center px-3 h-8 ms-0 leading-tight
+                                    border bg-primary border-green-300 text-gray-400 hover:bg-white hover:text-green-600"
+                                    pageCount={Math.ceil(totalPage / perPage)}
+                                    pageLinkClassName="flex items-center justify-center px-3 h-8 ms-0 leading-tight
+                                    border bg-primary border-green-300 hover:bg-white hover:text-green-600 text-gray-400"
+                                    pageClassName="text-black"
+                                    marginPagesDisplayed={1}
+                                    pageRangeDisplayed={2}
+                                    onPageChange={page => setCurrentPage(page.selected)}
+                                    containerClassName={"pagination"}
+                                    activeLinkClassName="flex items-center justify-center h-8 border border-green-300 hover:bg-blue-100 hover:text-green-600 border-green-300 bg-white text-green-600"
+                                />
+                            </div>) : ("")}
+                        </div>
                     </div>
                 </div>
             </div>

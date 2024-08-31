@@ -143,32 +143,19 @@ function LoginLayout() {
         <div className="w-full h-full bg-white rounded-4 flex flex-col gap-4 p-8">
           <p className="font-plus-bold text-24">Most Popular Tunes of Month</p>
           <div className="flex flex-row w-full justify-start items-center gap-4">
-            <img className="rounded-8 w-16 h-16" 
-              style={{
-                  border: '3px solid #faca15' // Adjust the font size as needed
-              }}
-             src="/demo/assets/camera.png"/>
+            <img className="w-16 h-16" src="/demo/assets/music.png"/>
             <p className="font-plus-bold text-20">Tune Title 1</p>
           </div>
           <div className="flex flex-row w-full justify-start items-center gap-4">
-            <img className="rounded-8 w-16 h-16" src="/demo/assets/camera.png"
-              style={{
-                border: '3px solid #faca15' // Adjust the font size as needed
-              }}/>
+            <img className="w-16 h-16" src="/demo/assets/music.png"/>
             <p className="font-plus-bold text-20">Tune Title 2</p>
           </div>
           <div className="flex flex-row w-full justify-start items-center gap-4">
-            <img className="rounded-8 w-16 h-16" src="/demo/assets/camera.png"
-              style={{
-                border: '3px solid #faca15' // Adjust the font size as needed
-              }}/>
+            <img className="w-16 h-16" src="/demo/assets/music.png"/>
             <p className="font-plus-bold text-20">Tune Title 3</p>
           </div>
           <div className="flex flex-row w-full justify-start items-center gap-4">
-            <img className="rounded-8 w-16 h-16" src="/demo/assets/camera.png"
-              style={{
-                border: '3px solid #faca15' // Adjust the font size as needed
-              }}/>
+            <img className="w-16 h-16" src="/demo/assets/music.png"/>
             <p className="font-plus-bold text-20">Tune Title 4</p>
           </div>
         </div>
