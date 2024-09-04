@@ -102,7 +102,7 @@ function Tunes() {
         loading();
 
         const actor = await HttpAgentInit();
-        const addTuneResult = await actor.add_tune(user.principal, currentTuneTitle, currentTuneData, true, new Uint8Array(0));
+        const addTuneResult = await actor.add_tune(user.principal, currentTuneTitle, currentTuneData, false);
         if (addTuneResult) {
             alert("success", "Success on adding to tunebook");
         } else {

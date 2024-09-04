@@ -49,7 +49,7 @@ export const keyInfo = [
 ];
 
 export const LOCAL_STORAGE_KEYS = {
-    EDIT_TUNE_ID: "edit_tune_id"
+    IS_EDIT_TUNE: "is_edit_tune"
 }
 
 export const DAY_OF_WEEK = [

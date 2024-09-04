@@ -66,26 +66,27 @@ function Playground() {
             return;
         }
 
-        if(!thumbnail) {
-            alert("warning", "Please input thumbnail");
-            return;
-        }
+        // if(!thumbnail) {
+        //     alert("warning", "Please input thumbnail");
+        //     return;
+        // }
 
         loading();
 
         try {
             const actor = await HttpAgentInit();
-            const editTurnId = localStorage.getItem(LOCAL_STORAGE_KEYS.EDIT_TUNE_ID);
-            if (editTurnId) {
-                const updateTuneResult = await actor.update_tune(Number(parseInt(editTurnId)), user.principal, title, currentTuneData, currentTuneData == currentTune.data, await convertImageDataToUInt8Arr(thumbnail));
+            const isEdit = localStorage.getItem(LOCAL_STORAGE_KEYS.IS_EDIT_TUNE);
+            if (isEdit) {
+                const updateTuneResult = await actor.update_tune(user.principal, title, currentTuneData, currentTuneData == currentTune.data);
                 if (updateTuneResult) {
                     alert("success", "Success on updating to tunebook");
                 } else {
                     alert("warning", "Failure on operation");
                 }
-                localStorage.removeItem(LOCAL_STORAGE_KEYS.EDIT_TUNE_ID);
+                localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_EDIT_TUNE);
             } else {
-                const addTuneResult = await actor.add_tune(user.principal, title, currentTuneData, currentTuneData == currentTune.data, await convertImageDataToUInt8Arr(thumbnail));
+                const addTuneResult = await actor.add_tune(user.principal, title, currentTuneData, currentTuneData == currentTune.data);
+                console.log("Here");
                 if (addTuneResult) {
                     alert("success", "Success on adding to tunebook");
                 } else {
@@ -99,7 +100,7 @@ function Playground() {
             alert("warning", "Failure on operation");
             loading(false);
             
-            localStorage.removeItem(LOCAL_STORAGE_KEYS.EDIT_TUNE_ID);
+            localStorage.removeItem(LOCAL_STORAGE_KEYS.IS_EDIT_TUNE);
             history.goBack();
         }
     };
@@ -135,9 +136,9 @@ function Playground() {
                             height: '42px', // Adjust the font size as needed
                         }}/>
                         <textarea className="w-full h-full" value={currentTuneData} onChange={(e) => {setCurrentTuneData(e.target.value)}}></textarea>
-                        <div className="relative cursor-pointer flex justify-center items-center z-20">
+                        {/* <div className="relative cursor-pointer flex justify-center items-center z-20">
                             <ThumbnailInput setThumbnail={handleThumbnail}/>
-                        </div>  
+                        </div>   */}
                     </div>
                 </div>
             </div>

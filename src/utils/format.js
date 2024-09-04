@@ -219,7 +219,7 @@ export const convertUInt8ArrToImageData = async Uint8Arr => {
 
 export const convertImageDataToUInt8Arr = async imageData => {
 
-  if (!imageData) return;
+  if (!imageData) return new Uint8Array();
 
   let matches = imageData.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+);base64,/);
   let avatarImage = imageData.replace(/^data:(.*,)?/, '');

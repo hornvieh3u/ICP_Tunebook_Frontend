@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { dispatch, useDispatch, useSelector } from "../../store/index.js";
 import { AvatarInput } from "../../components/DragDrop/AvatarInput.js";
 import loading from "../../utils/Loading.js";
-import { base64ToBlob, convertToDataURL, getBinaryFileSizeFromBase64 } from "../../utils/format.js";
+import { base64ToBlob, convertImageDataToUInt8Arr, convertToDataURL, convertUInt8ArrToImageData, getBinaryFileSizeFromBase64 } from "../../utils/format.js";
 import alert from "../../utils/Alert.js";
 import { SetTitle, UpdateInfo } from '../../store/reducers/auth.js';
 import Select from "react-tailwindcss-select";
@@ -48,38 +48,16 @@ function Profile() {
             alert('info', "File size shouldn't be bigger than 500Kb");
 
             return;
-        }  
-        
-        let matches = avatarData.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+);base64,/);
-        
-        let avatarImage = avatarData.replace(/^data:(.*,)?/, '');
-        if ((avatarImage.length % 4) > 0) {
-            avatarImage += '='.repeat(4 - (avatarImage.length % 4));
         }
-        
-        const imageBlob = base64ToBlob(avatarImage, matches[1]);
-        
-        let bsf = await imageBlob.arrayBuffer();     
-        
-        const byteArray= new Uint8Array(bsf);
+
+        const imageData = await convertImageDataToUInt8Arr(avatarData);
 
         const actor = await HttpAgentInit();
-
-        await actor.update_profile(user.principal, username, placeOfBirth, instrument.map(value => value.value).join(", "), byteArray);
-        let avatarUrl = '';
-
-        const chunks = [];
-        chunks.push(new Uint8Array(byteArray).buffer);
-    
-        const blob = new Blob(chunks, {type : "image/jpeg"});
-
-        const result = await convertToDataURL(blob);
-
-        avatarUrl = result;    
+        await actor.update_profile(user.principal, username, placeOfBirth, instrument.map(value => value.value).join(", "), imageData);
 
         let userInfo = {
           username: username,
-          avatar:avatarUrl,
+          avatar: await convertUInt8ArrToImageData(imageData),
           instruments: instrument.map(value => value.value).join(", "),
           placeOfBirth: placeOfBirth,
           isInitialized: true

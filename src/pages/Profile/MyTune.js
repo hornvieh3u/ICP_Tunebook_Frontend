@@ -90,7 +90,7 @@ function MyTune() {
     }
 
     const editMyTune = () => {
-        localStorage.setItem(LOCAL_STORAGE_KEYS.EDIT_TUNE_ID, tuneId);
+        localStorage.setItem(LOCAL_STORAGE_KEYS.IS_EDIT_TUNE, tuneId);
         history.push("/app/playground");
     }
 
