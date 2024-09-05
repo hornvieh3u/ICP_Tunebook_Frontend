@@ -6,6 +6,8 @@ import HttpAgentInit from "../../context/HttpAgentInit.js";
 import { convertUInt8ArrToImageData } from "../../utils/format.js";
 import alert from "../../utils/Alert.js";
 import loading from "../../utils/Loading.js";
+import ABCJS from "abcjs";
+import 'abcjs/abcjs-audio.css';
 
 function Friends() {
 
@@ -18,6 +20,9 @@ function Friends() {
     const [activeTab, setActiveTab] = useState("friends");
     const [userProfile, setUserProfile] = useState({});
     const [openModal, setOpenModal] = useState(false);
+    const [tuneData, setTuneData] = useState("");
+    const synth = new ABCJS.synth.CreateSynth();
+    const synthControl = new ABCJS.synth.SynthController();
 
     useEffect(() => {
         dispatch(SetTitle('Friends'));
@@ -133,6 +138,32 @@ function Friends() {
         loading(false);
     }
 
+    useEffect(() => {
+        initABC(tuneData)
+    }, [tuneData])
+    
+    const initABC = async (tuneData) => {
+        if (!tuneData) {
+            let dom = document.getElementsByClassName("abcjs-inline-audio abcjs-disabled");
+            if (dom.length > 0) dom[0].remove();
+            return;
+        }
+
+        const visualObj = ABCJS.renderAbc("tunedata", tuneData,  { responsive: "resize" });
+        
+        try {
+            await synth.init({ visualObj: visualObj[0] });
+            await synthControl.setTune(visualObj[0], false, {});
+            synthControl.load("#player", null, {
+            displayRestart: true,
+            displayPlay: true,
+            displayProgress: true,
+            displayWarp: true})
+        } catch (error) {
+            console.error("Error initializing or playing the tune", error);
+        }
+    }
+
     return (
         <>
         <div className="flex flex-row py-8 font-plus px-10 relative w-full gap-8 text-darkblue-800 h-full">
@@ -224,43 +255,54 @@ function Friends() {
                     <div className="fixed inset-0 flex items-center justify-center">
                         <div className="flex w-full flex-row justify-center items-center px-4">
                             <div style={{maxWidth: "469px", maxHeight: '666px', margin: '0 auto', backgroundColor: "rgba(255, 255, 255)"}} className="w-full p-4 sm:p-6 md:p-8 gap-[20px] bg-opacity-40 rounded-5 shadow-bottom_1 flex justify-start flex-col items-center">                    
-                                <div className="flex flex-col justify-center items-center w-full">
-                                    <div className="relative cursor-pointer flex justify-center items-center z-20">
-                                        <Avatar src={userProfile.imageData} alt="avatar" variant="rounded" />
-                                    </div>                                
-                                </div>
-                                <p className="text-black font-plus font-bold text-18 leading-22">{userProfile.username}</p>
-                                <div className="relative flex flex-col justify-start w-full gap-[5px]">
-                                    <div className="flex flex-row justify-start items-center">
-                                        <p className="font-plus text-black font-light text-14 leading-20">Location</p>
+                            {
+                                !tuneData? (
+                                    <>
+                                        <div className="flex flex-col justify-center items-center w-full">
+                                            <div className="relative cursor-pointer flex justify-center items-center z-20">
+                                                <Avatar src={userProfile.imageData} alt="avatar" variant="rounded" />
+                                            </div>                                
+                                        </div>
+                                        <p className="text-black font-plus font-bold text-18 leading-22">{userProfile.username}</p>
+                                        <div className="relative flex flex-col justify-start w-full gap-[5px]">
+                                            <div className="flex flex-row justify-start items-center">
+                                                <p className="font-plus text-black font-light text-14 leading-20">Location</p>
+                                            </div>
+                                            <input readOnly className="border bg-gray-100 py-2 px-4 rounded-3 text-black font-plus font-normal outline-none border-green-400 focus:border-transparent focus:ring-0" value={userProfile.pob} style={{height: '36px'}}></input>
+                                        </div>
+                                        <div className="relative flex flex-col justify-start w-full gap-[5px]">
+                                            <div className="flex flex-row justify-start items-center">
+                                                <p className="font-plus text-black font-light text-14 leading-20">Instruments</p>
+                                            </div>
+                                            <input readOnly className="border bg-gray-100 py-2 px-4 rounded-3 text-black font-plus font-normal outline-none border-green-400 focus:border-transparent focus:ring-0" value={userProfile.instruments} style={{height: '36px'}}></input>
+                                        </div>
+                                        <div className="flex flex-col justify-start w-full gap-[2px]">
+                                            <div className="flex flex-row justify-start items-center">
+                                                <p className="font-plus text-black font-light text-14 leading-20">Tunes</p>
+                                            </div>
+                                            <div className="flex flex-col w-full gap-[3px] h-[200px] overflow-y-auto">
+                                                {
+                                                    userProfile.tunes.map(tune => (
+                                                        <a href="javascript:void(0);" onClick={() => setTuneData(tune.tune_data)} className="flex flex-row justify-start w-full border border-green-400 gap-4 p-1 rounded-3">
+                                                            <img className="w-10 h-10 rounded-3" src="/demo/assets/music.png" alt="avatar" />
+                                                            <p className={`font-plus text-[13px] content-center ${tune.isSame? "text-green-400" : ""}`}>{tune.title.replaceAll(".abc", "")}</p>
+                                                        </a>
+                                                    ))
+                                                }
+                                            </div>
+                                        </div>
+                                        <Button className="w-full mt-2" size="md" color="green" onClick={() => setOpenModal(!openModal)}>
+                                            Ok
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <div className="flex flex-col w-full">
+                                        <div id="player"></div>
+                                        <div id="tunedata"></div>
+                                        <Button className="w-full mt-2" size="md" color="green" onClick={() => setTuneData("")}>Back</Button>
                                     </div>
-                                    <input readOnly className="border bg-gray-100 py-2 px-4 rounded-3 text-black font-plus font-normal outline-none border-green-400 focus:border-transparent focus:ring-0" value={userProfile.pob} style={{height: '36px'}}></input>
-                                </div>
-                                <div className="relative flex flex-col justify-start w-full gap-[5px]">
-                                    <div className="flex flex-row justify-start items-center">
-                                        <p className="font-plus text-black font-light text-14 leading-20">Instruments</p>
-                                    </div>
-                                    <input readOnly className="border bg-gray-100 py-2 px-4 rounded-3 text-black font-plus font-normal outline-none border-green-400 focus:border-transparent focus:ring-0" value={userProfile.instruments} style={{height: '36px'}}></input>
-                                </div>
-                                <div className="flex flex-col justify-start w-full gap-[2px]">
-                                    <div className="flex flex-row justify-start items-center">
-                                        <p className="font-plus text-black font-light text-14 leading-20">Tunes</p>
-                                    </div>
-                                    <div className="flex flex-col w-full gap-[3px] h-[200px] overflow-y-auto">
-                                        {
-                                            userProfile.tunes.map(tune => (
-                                                console.log(tune.isSame),
-                                                <div className="flex flex-row justify-start w-full border border-green-400 gap-4 p-1 rounded-3">
-                                                    <img className="w-10 h-10 rounded-3" src="/demo/assets/music.png" alt="avatar" />
-                                                    <p className={`font-plus text-[13px] content-center ${tune.isSame? "text-green-300" : ""}`}>{tune.title.replaceAll(".abc", "")}</p>
-                                                </div>
-                                            ))
-                                        }
-                                    </div>
-                                </div>
-                                <Button className="w-full mt-2" size="md" color="green" onClick={() => setOpenModal(!openModal)}>
-                                    Ok
-                                </Button>
+                                )
+                            }
                             </div>
                         </div>
                     </div>
